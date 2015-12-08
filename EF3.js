@@ -5,7 +5,7 @@ var isTheSameWeek = function(mondayDate, inputDate)
 
     var splittedInputDate = inputDate.split('T');
 
-    if((parseInt(splittedInputDate[0]) - parseInt(tmp)) > 6){
+    if(((parseInt(splittedInputDate[0]) - parseInt(tmp)) > 6) || ((parseInt(splittedInputDate[0]) - parseInt(tmp)) < 0)){
         return false;
     }
     else{
@@ -18,7 +18,7 @@ var isOnTheList = function(input, list)
     var found = false;
 
     for(var i=0; i < list.length; i++)
-    {
+    {(parseInt(splittedInputDate[0]) - parseInt(tmp)) < 0)
         var splittedInputName = input.manager.split(',');
         var splittedListName = list[i][0].manager.split(',');
 
