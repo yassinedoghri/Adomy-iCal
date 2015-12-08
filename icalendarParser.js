@@ -171,7 +171,7 @@ icalendarParser.prototype.date = function(input)
 {
 	this.expect("DTSTART",input);
 	var curS = this.next(input);
-	if(matched = curS.match(/\d{8}T\d{6}/)){
+	if(matched = curS.match(/\d{4}[0-1][0-2][0-3][0-9]T[0-2][0-9][0-6][0-9][0-6][0-9]/)){
 		if(matched[0] != curS){
 			this.err("Invalid date value.");
 		}
