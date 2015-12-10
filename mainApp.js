@@ -3,7 +3,7 @@ var icalendarParserFile = require('./icalendarParser.js');
 var EF1file = require('./EF1.js');
 var EF3file = require('./EF3.js');
 var CsvParserFile = require('./CsvParser.js');
-var EF2File = require(‘./EF2.js');
+var EF2File = require('./EF2.js');
 
 matchLocation = EF1file.matchLocation;
 
