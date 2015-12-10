@@ -3,7 +3,7 @@ var icalendarParserFile = require('./icalendarParser.js');
 var EF1file = require('./EF1.js');
 var EF3file = require('./EF3.js');
 var CsvParserFile = require('./CsvParser.js');
-var CsvToICalendarFile = require('./CsvToICalendar.js');
+var EF2File = require(‘./EF2.js');
 
 matchLocation = EF1file.matchLocation;
 
@@ -118,7 +118,7 @@ var launchFunction = function(inputValue)
         case '2':
             console.log("2 : Convertir au format iCalendar.\n\r");
             if(myArgs.length > 0) 
-                CsvToICalendarFile.launchCSVToICalendar();
+                EF2File.launchCSVToICalendar();
             else {
                 console.log("Error : No files given.");
                 process.exit(1);
