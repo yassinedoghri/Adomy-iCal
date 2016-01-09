@@ -18,18 +18,22 @@ switch (ef) {
     case '1' :
         files = args.slice(1);
         if (files.length < 2) {
-            console.log('Veuillez renseigner des fichiers ics');
+            console.log('Veuillez renseigner au moins deux fichiers iCalendar');
         }
-        generateConflictsPlanning(files);
+        try {
+            generateConflictsPlanning(files);
+        } catch (e) {
+            console.log(e.message);
+        }
         break;
     case '2':
         getVolumeHoraireTotalIntervenant();
         break;
     case '3':
         file = args[1];
-        if (file === 'undefined') {
-            console.log('Veuillez renseigner un fichier CSV pour l\'export');
-            process.exit(0);
+        if (null == file) {
+            console.log('Veuillez renseigner un fichier CSV pour l\'export !');
+            process.exit(1);
         }
         convertCSVFile(file);
         break;
@@ -44,7 +48,7 @@ function generateConflictsPlanning(afiles) {
     var files = eliminateDuplicates(afiles);
     async.map(files, readAsync, function (err, results) {
         if (err) {
-            console.log(err);
+            console.log("Erreur : Fichier(s) Introuvable(s) !");
         }
         console.log(files);
         var planningList = new PlanningList();
@@ -89,7 +93,7 @@ function generateConflictsPlanning(afiles) {
 
         console.log(prettyjson.render(conflictsPlanning, options));
 
-        console.log(conflictsPlanning.exportToCSV());
+        console.log(conflictsPlanning.exportToCSV('conflict'));
     });
 }
 
@@ -117,7 +121,7 @@ function convertCSVFile(file) {
     var lt = file.substr(file.indexOf('_') + 1, file.length);
     var locationTmp = (lt.replace(/_/g, ' ')).replace(/-/g, ',');
     var location = locationTmp.replace(/.csv/g, '');
-    console.log(location);
+
     //new converter instance
     var csvConverter = new Converter({delimiter: ";"});
 
@@ -158,7 +162,8 @@ function convertCSVFile(file) {
                             meeting.date = key.replace(/-/g, '') + 'T' + getFormatTime(time);
                             meeting.duration = getFormatDuration(duration);
                             meeting.location = location;
-                            planning.add(meeting);
+                            planning.addMeeting(meeting);
+
                         } catch (e) {
                             console.log(e.message);
                         }
@@ -173,7 +178,27 @@ function convertCSVFile(file) {
                 week[key].cellTmp = week[key].currentCell;
             }
         }
-        console.log(planning.exportToCSV());
+        var dir = './exports';
+
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir);
+        }
+        var loc;
+        if (planning.meetings.length > 0) {
+            var loc = planning.meetings[0].location;
+        } else {
+            console.log("Aucune donnée dans le fichier !");
+            process.exit(1);
+        }
+        file = dir + '/conversion_' + loc.replace(/\s+|,/g, '-').toLowerCase() + '.csv';
+
+        fs.writeFile(file, planning.exportToICal(), function (err) {
+            if (err) {
+                return console.log(err);
+            }
+
+            console.log("Le fichier a été sauvegardé dans le dossier exports !");
+        });
     });
     //read from file
     fs.createReadStream(file).pipe(csvConverter);
@@ -185,17 +210,9 @@ function getFormatTime(mins) {
     var hours = parseInt(totalSec / 3600) % 24;
     var minutes = parseInt(totalSec / 60) % 60;
     var seconds = parseInt(totalSec % 60, 10);
-    console.log(seconds);
+//    console.log(seconds);
 
-    if (minutes === "0") {
-        minutes = "00";
-    }
-    if (seconds === "0") {
-        seconds = "00";
-    }
-    console.log((hours < 10 ? "0" + hours : hours) + (minutes < 10 ? "0" + minutes : minutes) + (seconds < 10 ? "0" + seconds : seconds));
-    
-    return (hours < 10 ? "0" + hours : hours) + (minutes < 10 ? "0" + minutes : minutes) + (seconds < 10 ? "0" + seconds : seconds);
+    return (hours < 10 ? "0" + hours.toString() : hours.toString()) + (minutes < 10 ? "0" + minutes : minutes) + (seconds < 10 ? "0" + seconds : seconds);
 }
 
 // format as PT1H00M0S

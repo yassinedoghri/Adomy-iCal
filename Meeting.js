@@ -119,11 +119,37 @@ Meeting.prototype.getCSVCell = function () {
     return this.organizer + '-' + this.contact;
 };
 
+Meeting.prototype.getDateFormat = function () {
+    console.log(this.date.yyyymmdd + 'T' + getFormatTime(this.duration));
+    return this.date.yyyymmdd() + 'T' + getFormatTime(this.duration);
+};
+
 Date.prototype.yyyymmdd = function () {
     var yyyy = this.getFullYear().toString();
     var mm = (this.getMonth() + 1).toString(); // getMonth() is zero-based
     var dd = this.getDate().toString();
     return yyyy + (mm[1] ? mm : "0" + mm[0]) + (dd[1] ? dd : "0" + dd[0]); // padding
+};
+
+// get Time as HHMMSS
+function getFormatTime(mins) {
+    var totalSec = mins * 60;
+    var hours = parseInt(totalSec / 3600) % 24;
+    var minutes = parseInt(totalSec / 60) % 60;
+    var seconds = parseInt(totalSec % 60, 10);
+//    console.log(seconds);
+
+    return (hours < 10 ? "0" + hours.toString() : hours.toString()) + (minutes < 10 ? "0" + minutes : minutes) + (seconds < 10 ? "0" + seconds : seconds);
+}
+
+// format as PT1H00M0S
+Meeting.prototype.getFormatDuration = function () {
+    var totalSec = this.duration * 60;
+    var hours = parseInt(totalSec / 3600) % 24;
+    var minutes = parseInt(totalSec / 60) % 60;
+    var seconds = totalSec % 60;
+
+    return 'PT' + hours + 'H' + minutes + 'M' + seconds + 'S';
 };
 
 function getDateArray(dateString) {

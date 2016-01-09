@@ -83,7 +83,7 @@ Planning.prototype.exportToCSV = function () {
     if (this.meetings.length > 0) {
         var loc = this.meetings[0].location;
     }
-    file = dir + '/conflict_' + loc.replace(/\s+|,/g, '-').toLowerCase() + '.csv';
+    file = dir + '/' + type + loc.replace(/\s+|,/g, '-').toLowerCase() + '.csv';
     json2csv({data: this.csvStructure(), fields: fields}, function (err, csv) {
         if (err) {
             throw err;
@@ -96,6 +96,21 @@ Planning.prototype.exportToCSV = function () {
             }
         });
     });
+};
+
+Planning.prototype.exportToICal = function () {
+    var iCalString = "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//hacksw/handcal//NONSGML v1.0//EN";
+    for (var i = 0; i < this.size(); i++) {
+        console.log(this.meetings[i].getDateFormat());
+        iCalString += "\r\nBEGIN:VEVENT\r\nDTSTART:" + this.meetings[i].getDateFormat() +
+                "\r\nDURATION:"+ this.meetings[i].getFormatDuration()+
+        "\r\nORGANIZER:"+ this.meetings[i].organizer +
+        "\r\nLOCATION:"+ this.meetings[i].location +
+        "\r\nCONTACT:"+ this.meetings[i].contact +
+        "\r\nEND:VEVENT";
+    }
+    iCalString += "\r\nEND:VCALANDAR";
+    return iCalString;
 };
 
 
@@ -125,7 +140,7 @@ function formatDate(date) {
 
 Date.prototype.getMonday = function () {
     var day = this.getDay(),
-            diff = this.getDate() - day + (day == 0 ? -6 : 1); // adjust when day is sunday
+            diff = this.getDate() - day + (day === 0 ? -6 : 1); // adjust when day is sunday
     return new Date(this.setDate(diff));
 };
 
