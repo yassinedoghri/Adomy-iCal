@@ -1,0 +1,25 @@
+{
+    "name": "atlantis-gl02",
+    "version": "1.0.0",
+    "description": "Gestionnaire de plannings iCalendar en ligne de commande avec NodeJS",
+    "main": "main.js",
+    "directories": {
+        "test": "test"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "dependencies": {
+        "lodash": "3.10.x",
+        "async": "1.5.x",
+        "csvtojson": "0.5.x",
+        "json2csv": "3.0.x",
+        "prettyjson": "1.1.x"
+    },
+    "keywords": ["NodeJs", "Command Line", "vCard", "Atlantis", "GL02"],
+    "author": "Atlantis",
+    "license": {
+        "type": "MIT",
+        "url": "http://www.opensource.org/licenses/mit-license.php"
+    }
+}

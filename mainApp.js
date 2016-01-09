@@ -12,19 +12,19 @@ var toDo = myArgs[0];
 
 myArgs.shift(); //remove the first argument which is the number of the function to execute
 
-var readFile = function(myArgs)
+var readFile = function (myArgs)
 {
-    var contents; 
+    var contents;
     var arrayOfData = [];
 
-    for(var i = 0; i <  myArgs.length; i++)
+    for (var i = 0; i < myArgs.length; i++)
     {
-        try{
+        try {
             contents = fs.readFileSync(myArgs[i], 'utf8'); //use synchrone call to prevent code execution with errors of loading files
-        }
-        catch(e){
+        } catch (e) {
             console.log(e);
-            process.exit(1);        }
+            process.exit(1);
+        }
 
         arrayOfData.push(contents);
     }
@@ -32,32 +32,32 @@ var readFile = function(myArgs)
     return arrayOfData;
 }
 
-var parseIcalFiles = function(myArgs)
+var parseIcalFiles = function (myArgs)
 {
     var data = readFile(myArgs); //data is an array composed of files' information
     var parsedPOI = []; //contains parsed icalendar. First dimension is files, second dimension events.
 
-    for(var i=0; i<data.length; i++)
+    for (var i = 0; i < data.length; i++)
     {
         var analyzer = new icalendarParserFile.icalendarParser;
 
-        if(!analyzer.checkExtension(myArgs[i])){
+        if (!analyzer.checkExtension(myArgs[i])) {
             console.log("Error : file " + myArgs[i] + " is not an ics file.");
             process.exit(1);
         }
 
         analyzer.parse(data[i]);
-        parsedPOI.push(analyzer.parsedPOI);  
-        console.log("File " + myArgs[i] + " has been parsed with success."); 
+        parsedPOI.push(analyzer.parsedPOI);
+        console.log("File " + myArgs[i] + " has been parsed with success.");
     }
     console.log('\n\r');
 
     return(parsedPOI);
 }
 
-var manageInterventions = function()
+var manageInterventions = function ()
 {
-    if(myArgs.length < 3)
+    if (myArgs.length < 3)
     {
         console.log("Error : Number of arguments smaller than 3.");
         process.exit(1);
@@ -70,9 +70,9 @@ var manageInterventions = function()
     matchLocation(parsedPOI, location);
 }
 
-var personnalInformations = function()
+var personnalInformations = function ()
 {
-    if(myArgs.length < 2)
+    if (myArgs.length < 2)
     {
         console.log("Error : No files given.");
         process.exit(1);
@@ -82,18 +82,18 @@ var personnalInformations = function()
     myArgs.shift();
 
     var regex = /(^(((0[1-9]|1[0-9]|2[0-8])[\/](0[1-9]|1[012]))|((29|30|31)[\/](0[13578]|1[02]))|((29|30)[\/](0[4,6,9]|11)))[\/](19|[2-9][0-9])\d\d$)|(^29[\/]02[\/](19|[2-9][0-9])(00|04|08|12|16|20|24|28|32|36|40|44|48|52|56|60|64|68|72|76|80|84|88|92|96)$)/;
-    
-    if(!regex.exec(mondayDate))
+
+    if (!regex.exec(mondayDate))
     {
         console.log("Error : date must be on dd/mm/yyyy format.");
         process.exit(1);
     }
 
-    for(var i=0; i < myArgs.length; i++)
+    for (var i = 0; i < myArgs.length; i++)
     {
-        for(var j=i+1; j < myArgs.length; j++)
+        for (var j = i + 1; j < myArgs.length; j++)
         {
-            if(myArgs[i] == myArgs[j])
+            if (myArgs[i] == myArgs[j])
             {
                 console.log("Error : You cannot give more than once the same file");
                 process.exit(1);
@@ -106,9 +106,9 @@ var personnalInformations = function()
     eventSort(parsedPOI, mondayDate);
 }
 
-var launchFunction = function(inputValue)
-{   
-    switch(inputValue) 
+var launchFunction = function (inputValue)
+{
+    switch (inputValue)
     {
         case '1':
             console.log("1 : Gérer les interventions.\n\r");
@@ -117,7 +117,7 @@ var launchFunction = function(inputValue)
             break;
         case '2':
             console.log("2 : Convertir au format iCalendar.\n\r");
-            if(myArgs.length > 0) 
+            if (myArgs.length > 0)
                 EF2File.launchCSVToICalendar();
             else {
                 console.log("Error : No files given.");
@@ -133,7 +133,7 @@ var launchFunction = function(inputValue)
             return("Wrong charactere inputted.");
             console.log('\n\rEnd of execution.');
             break;
-    }   
+    }
 }
 
 launchFunction(toDo);
